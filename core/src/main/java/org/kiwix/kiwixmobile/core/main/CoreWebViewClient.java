@@ -73,7 +73,7 @@ public class CoreWebViewClient extends WebViewClient {
       if (handleEpubAndPdf(url)) {
         return true;
       }
-      view.loadUrl(zimReaderContainer.getRedirect(url));
+      view.loadUrl(url);
       return true;
     }
     if (url.startsWith(CONTENT_PREFIX)) {
@@ -163,7 +163,6 @@ public class CoreWebViewClient extends WebViewClient {
   @Override
   public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
     String url = convertLegacyUrl(request.getUrl().toString());
-    url = url.replaceAll("\\?", "%3F");
     if (url.startsWith(CONTENT_PREFIX)) {
       return zimReaderContainer.load(url, request.getRequestHeaders());
     } else {
