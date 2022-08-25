@@ -73,7 +73,7 @@ public class CoreWebViewClient extends WebViewClient {
       if (handleEpubAndPdf(url)) {
         return true;
       }
-      view.loadUrl(url);
+      view.loadUrl(zimReaderContainer.getRedirect(url));
       return true;
     }
     if (url.startsWith(CONTENT_PREFIX)) {

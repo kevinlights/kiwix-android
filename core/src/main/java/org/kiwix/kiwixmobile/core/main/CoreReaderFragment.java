@@ -1541,7 +1541,7 @@ public abstract class CoreReaderFragment extends BaseFragment
     }
 
     if (handleEvent) {
-      showOpenInNewTabDialog(url);
+      showOpenInNewTabDialog(zimReaderContainer.getRedirect(url));
     }
   }
 
