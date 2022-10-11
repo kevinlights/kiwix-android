@@ -34,7 +34,7 @@ fun generateVersionCode() =
     ext["versionMinor"] as Int * 100 +
     ext["versionPatch"] as Int
 
-val apkPrefix get() = System.getenv("TAG") ?: "dev"
+val apkPrefix get() = System.getenv("TAG") ?: "kiwix"
 
 android {
 
@@ -69,6 +69,10 @@ android {
       setMatchingFallbacks("release")
       buildConfigField("boolean", "IS_PLAYSTORE", "true")
       manifestPlaceholders["permission"] = "android.permission.placeholder"
+    }
+    create("nightly") {
+      initWith(getByName("debug"))
+      setMatchingFallbacks("debug")
     }
   }
   bundle {

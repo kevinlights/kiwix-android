@@ -27,6 +27,9 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 import org.gradle.kotlin.dsl.project
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AppConfigurer {
   fun configure(target: Project) {
@@ -75,6 +78,7 @@ class AppConfigurer {
         outputs.filterIsInstance<ApkVariantOutput>().forEach { output: ApkVariantOutput ->
           val abiVersionCode = abiCodes[output.getFilter(VariantOutput.FilterType.ABI)] ?: 7
           output.versionCodeOverride = (abiVersionCode * 1_000_000) + output.versionCode
+          output.outputFileName = setApkName(output.outputFileName)
         }
       }
 
@@ -84,6 +88,19 @@ class AppConfigurer {
     }
     configureDependencies(target)
   }
+
+  private fun setApkName(outputFileName: String): String {
+    return if (outputFileName.contains("nightly")) {
+      "${
+        outputFileName.substringBefore("-nightly")
+      }-${getCurrentDate()}.apk"
+    } else {
+      outputFileName
+    }
+  }
+
+  private fun getCurrentDate() =
+    Date().let(SimpleDateFormat("dd-MM-yyyy", Locale.ROOT)::format)
 
   private fun configureDependencies(target: Project) {
     target.dependencies {
