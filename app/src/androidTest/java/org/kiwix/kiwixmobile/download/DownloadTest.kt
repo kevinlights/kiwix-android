@@ -40,7 +40,6 @@ import org.kiwix.kiwixmobile.R
 import org.kiwix.kiwixmobile.core.utils.SharedPreferenceUtil
 import org.kiwix.kiwixmobile.main.KiwixMainActivity
 import org.kiwix.kiwixmobile.testutils.TestUtils
-import org.kiwix.kiwixmobile.testutils.TestUtils.allowStoragePermissionsIfNeeded
 import org.kiwix.kiwixmobile.utils.KiwixIdlingResource.Companion.getInstance
 import java.util.concurrent.TimeUnit
 
@@ -53,6 +52,7 @@ class DownloadTest : BaseActivityTest() {
       putBoolean(SharedPreferenceUtil.PREF_WIFI_ONLY, false)
       putBoolean(SharedPreferenceUtil.PREF_SHOW_STORAGE_OPTION, false)
       putBoolean(SharedPreferenceUtil.IS_PLAY_STORE_BUILD, true)
+      putBoolean(SharedPreferenceUtil.PREF_IS_TEST, true)
     }
   }
 
@@ -65,13 +65,10 @@ class DownloadTest : BaseActivityTest() {
   fun downloadTest() {
     BaristaSleepInteractions.sleep(TestUtils.TEST_PAUSE_MS.toLong())
     downloadRobot(DownloadRobot::clickLibraryOnBottomNav)
-    allowStoragePermissionsIfNeeded()
     downloadRobot {
       deleteZimIfExists("A little question a day")
       clickDownloadOnBottomNav()
     }
-    TestUtils.captureAndSaveScreenshot("Before-checking-for-ZimManager-Main-Activity")
-    TestUtils.captureAndSaveScreenshot("After-the-check-completed")
     BaristaSleepInteractions.sleep(TestUtils.TEST_PAUSE_MS.toLong())
     try {
       downloadRobot {
@@ -104,6 +101,7 @@ class DownloadTest : BaseActivityTest() {
     IdlingRegistry.getInstance().unregister(getInstance())
     PreferenceManager.getDefaultSharedPreferences(context).edit {
       putBoolean(SharedPreferenceUtil.IS_PLAY_STORE_BUILD, false)
+      putBoolean(SharedPreferenceUtil.PREF_IS_TEST, false)
     }
   }
 
