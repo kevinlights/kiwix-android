@@ -17,13 +17,12 @@
  */
 package org.kiwix.kiwixmobile.core.dao.entities
 
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
+import androidx.room.PrimaryKey
 import org.kiwix.kiwixmobile.core.data.local.entity.RecentSearch
 
-@Entity
+@androidx.room.Entity
 data class RecentSearchEntity(
-  @Id var id: Long = 0L,
+  @PrimaryKey var id: Long = 0L,
   val searchTerm: String,
   val zimId: String
 ) {
