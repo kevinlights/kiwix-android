@@ -18,18 +18,15 @@
 
 package org.kiwix.kiwixmobile.core.dao.entities
 
-import io.objectbox.annotation.Convert
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
-import io.objectbox.converter.PropertyConverter
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import org.kiwix.kiwixmobile.core.entity.LibraryNetworkEntity.Book
 import org.kiwix.kiwixmobile.core.zim_manager.fileselect_view.adapter.BooksOnDiskListItem.BookOnDisk
 import java.io.File
 
-@Entity
+@androidx.room.Entity
 data class BookOnDiskEntity(
-  @Id var id: Long = 0,
-  @Convert(converter = StringToFileConverter::class, dbType = String::class)
+  @PrimaryKey var id: Long = 0,
   val file: File = File(""),
   val bookId: String,
   val title: String,
@@ -83,8 +80,11 @@ data class BookOnDiskEntity(
   }
 }
 
-class StringToFileConverter : PropertyConverter<File, String> {
-  override fun convertToDatabaseValue(entityProperty: File?) = entityProperty?.path ?: ""
 
-  override fun convertToEntityProperty(databaseValue: String?) = File(databaseValue ?: "")
+class StringToFileConverter {
+  @TypeConverter
+  fun convertToString(entityProperty: File?) = entityProperty?.path ?: ""
+
+  @TypeConverter
+  fun convertToFile(databaseValue: String?) = File(databaseValue ?: "")
 }
