@@ -110,6 +110,8 @@ object Versions {
 
   const val junit: String = "1.1.2"
 
+  const val room_version = "2.4.3"
+
   /**
    * Current version: "6.2"
    * See issue 19: How to update Gradle itself?

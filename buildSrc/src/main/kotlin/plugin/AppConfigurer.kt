@@ -113,6 +113,8 @@ class AppConfigurer {
       androidTestImplementation(Libs.mockk_android)
       androidTestImplementation(Libs.uiautomator)
       androidTestImplementation(Libs.assertj_core)
+      implementation(Libs.room_runtime)
+      annotationProcessor(Libs.room_compiler)
     }
   }
 }
