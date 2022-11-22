@@ -17,26 +17,24 @@
  */
 package org.kiwix.kiwixmobile.core.dao.entities
 
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import com.tonyodev.fetch2.Download
 import com.tonyodev.fetch2.Error
 import com.tonyodev.fetch2.Status
-import io.objectbox.annotation.Convert
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
-import io.objectbox.converter.PropertyConverter
 import org.kiwix.kiwixmobile.core.entity.LibraryNetworkEntity.Book
 
-@Entity
+@androidx.room.Entity
 data class FetchDownloadEntity(
-  @Id var id: Long = 0,
+  @PrimaryKey var id: Long = 0,
   var downloadId: Long,
   val file: String? = null,
   val etaInMilliSeconds: Long = -1L,
   val bytesDownloaded: Long = -1L,
   val totalSizeOfDownload: Long = -1L,
-  @Convert(converter = StatusConverter::class, dbType = Int::class)
+  // todo add converter in database class
   val status: Status = Status.NONE,
-  @Convert(converter = ErrorConverter::class, dbType = Int::class)
+  // todo add converter in database class
   val error: Error = Error.NONE,
   val progress: Int = -1,
   val bookId: String,
@@ -100,14 +98,12 @@ data class FetchDownloadEntity(
   )
 }
 
-class StatusConverter : EnumConverter<Status>() {
-  override fun convertToEntityProperty(databaseValue: Int) = Status.valueOf(databaseValue)
+class StatusConverter {
+  @TypeConverter
+  fun convertToStatus(databaseValue: Int) = Status.valueOf(databaseValue)
 }
 
-class ErrorConverter : EnumConverter<Error>() {
-  override fun convertToEntityProperty(databaseValue: Int) = Error.valueOf(databaseValue)
-}
-
-abstract class EnumConverter<E : Enum<E>> : PropertyConverter<E, Int> {
-  override fun convertToDatabaseValue(entityProperty: E): Int = entityProperty.ordinal
+class ErrorConverter {
+  @TypeConverter
+  fun convertToErrorConverter(databaseValue: Int) = Error.valueOf(databaseValue)
 }
