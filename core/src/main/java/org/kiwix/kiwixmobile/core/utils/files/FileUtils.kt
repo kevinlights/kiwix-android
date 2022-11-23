@@ -26,6 +26,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.util.Log
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
 import org.kiwix.kiwixmobile.core.CoreApp
@@ -301,10 +302,7 @@ object FileUtils {
    * If the url and src doesn't exist it returns the empty string.
    */
   fun getDecodedFileName(url: String?, src: String?): String =
-    url?.substringAfterLast("/", "")
-      ?.takeIf { it.contains(".") }
-      ?: src?.substringAfterLast("/", "")
-        ?.substringAfterLast("%3A") ?: ""
+    URLUtil.guessFileName(url ?: src, null, null)
 
   @JvmStatic fun downloadFileFromUrl(
     url: String?,
