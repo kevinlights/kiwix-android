@@ -20,12 +20,12 @@ package org.kiwix.kiwixmobile.download
 import android.util.Log
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import com.adevinta.android.barista.interaction.BaristaSleepInteractions
 import com.adevinta.android.barista.interaction.BaristaSwipeRefreshInteractions.refresh
@@ -46,8 +46,13 @@ import java.util.concurrent.TimeUnit
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class DownloadTest : BaseActivityTest() {
-  override var activityRule: ActivityTestRule<KiwixMainActivity> = activityTestRule {
-    PreferenceManager.getDefaultSharedPreferences(context).edit {
+
+  @Before
+  override fun waitForIdle() {
+    UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).waitForIdle()
+    PreferenceManager.getDefaultSharedPreferences(
+      InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
+    ).edit {
       putBoolean(SharedPreferenceUtil.PREF_SHOW_INTRO, false)
       putBoolean(SharedPreferenceUtil.PREF_WIFI_ONLY, false)
       putBoolean(SharedPreferenceUtil.PREF_SHOW_STORAGE_OPTION, false)
@@ -56,22 +61,15 @@ class DownloadTest : BaseActivityTest() {
     }
   }
 
-  @Before
-  override fun waitForIdle() {
-    UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).waitForIdle()
-  }
-
   @Test
   fun downloadTest() {
-    BaristaSleepInteractions.sleep(TestUtils.TEST_PAUSE_MS.toLong())
-    downloadRobot(DownloadRobot::clickLibraryOnBottomNav)
-    downloadRobot {
-      deleteZimIfExists("A little question a day")
-      clickDownloadOnBottomNav()
-    }
+    ActivityScenario.launch(KiwixMainActivity::class.java)
     BaristaSleepInteractions.sleep(TestUtils.TEST_PAUSE_MS.toLong())
     try {
       downloadRobot {
+        clickLibraryOnBottomNav()
+        deleteZimIfExists()
+        clickDownloadOnBottomNav()
         waitForDataToLoad()
         scrollToAlpineWikiZim()
         downloadZimFile()

@@ -42,6 +42,7 @@ class DownloadRobot : BaseRobot() {
 
   private var retryCountForDataToLoad = 5
   private var retryCountForCheckDownloadStart = 5
+  private val zimFileTitle = "A little question a day"
 
   fun clickLibraryOnBottomNav() {
     clickOn(ViewId(R.id.libraryFragment))
@@ -51,15 +52,15 @@ class DownloadRobot : BaseRobot() {
     clickOn(ViewId(R.id.downloadsFragment))
   }
 
-  fun deleteZimIfExists(zimTitle: String) {
+  fun deleteZimIfExists() {
     try {
-      longClickOn(Text(zimTitle))
+      longClickOn(Text(zimFileTitle))
       clickOn(ViewId(R.id.zim_file_delete_item))
       onView(withText("DELETE")).perform(click())
     } catch (e: RuntimeException) {
       Log.i(
         "TEST_DELETE_ZIM",
-        "Failed to delete ZIM file with title [" + zimTitle + "]... " +
+        "Failed to delete ZIM file with title [" + zimFileTitle + "]... " +
           "Probably because it doesn't exist"
       )
     }
@@ -81,11 +82,11 @@ class DownloadRobot : BaseRobot() {
   }
 
   fun checkIfZimFileDownloaded() {
-    isVisible(Text("A little question a day"))
+    isVisible(Text(zimFileTitle))
   }
 
   fun downloadZimFile() {
-    clickOn(Text("A little question a day"))
+    clickOn(Text(zimFileTitle))
   }
 
   fun assertDownloadStart() {
@@ -102,8 +103,10 @@ class DownloadRobot : BaseRobot() {
   fun waitUntilDownloadComplete() {
     try {
       onView(withId(R.id.stop)).check(doesNotExist())
+      Log.i("kiwixDownloadTest", "Download complete")
     } catch (e: AssertionFailedError) {
       BaristaSleepInteractions.sleep(TestUtils.TEST_PAUSE_MS_FOR_DOWNLOAD_TEST.toLong())
+      Log.i("kiwixDownloadTest", "Downloading in progress")
       waitUntilDownloadComplete()
     }
   }
